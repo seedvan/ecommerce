@@ -66,10 +66,11 @@ def updateItem(request):
         orderItem.quantity = (orderItem.quantity + 1)
     elif action == 'remove':
         orderItem.quantity = (orderItem.quantity - 1)
-
+    
+        
     orderItem.save()
-
-    if orderItem.quantity <=0:
-        orderItem.delete
+    
+    if orderItem.quantity <= 0:
+        orderItem.delete()
 
     return JsonResponse('Item was added', safe=False)
