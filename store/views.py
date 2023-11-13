@@ -1,6 +1,10 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.shortcuts import redirect
 import json
+import datetime
 
 from .models import *
 
@@ -50,6 +54,38 @@ def checkout(request):
     context = {'items':items, 'order':order, 'cartItems':cartItems}
     return render(request, 'store/checkout.html', context)
 
+def signup(request):
+    context = {}
+    return render(request, "store/signup.html", context)
+
+def login(request):
+    
+    if request.user.is_authenticated:
+        customer=request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, completed=False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+    else:
+        items = []
+        order = {"get_cart_total": 0, "get_cart_items": 0}
+        cartItems = order['get_cart_items']
+    
+    
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
+        user = authenticate(request, email=email, password=password)
+
+        if user is not None:
+            login(request, user)
+            messages.success(request, 'Login successful.')
+            return redirect('home') 
+        else:
+            messages.error(request, 'Invalid login credentials.')
+            
+    context = {'items':items, 'order':order, 'cartItems':cartItems}
+    return render(request, "store/login.html", context)
+
 def updateItem(request):
     data = json.loads(request.body)
     productId = data['productId']
@@ -74,3 +110,26 @@ def updateItem(request):
         orderItem.delete()
 
     return JsonResponse('Item was added', safe=False)
+
+def processOrder(request):
+    transaction_id = datetime.datetime.now().timestamp()
+    data = json.loads(request.body)
+
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order = order, created = Order.objects.get_or_create(customer=customer, completed=False)
+        total = float(data['form']['total'])
+        order.transaction_id = transaction_id
+
+        ShippingAddress.objects.create(
+            customer=customer,
+            order=order,
+            address=data['shipping']['address'],
+            city=data['shipping']['city'],
+            county=data['shipping']['county'],
+            postcode=data['shipping']['postcode'],
+        )
+    else:
+        print('User is not logged in')
+    return JsonResponse('Payment complete', safe=False)
+
