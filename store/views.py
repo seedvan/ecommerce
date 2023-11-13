@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.shortcuts import redirect
 import json
 import datetime
 
 from .models import *
+from .form import *
 
 def store(request):
     
@@ -55,11 +57,35 @@ def checkout(request):
     return render(request, 'store/checkout.html', context)
 
 def signup(request):
-    context = {}
-    return render(request, "store/signup.html", context)
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+        return redirect('store')
+    else:
+        form = UserCreationForm
+    return render(request, "store/signup.html", {"form":form})
+
+def productdetails(request, pk):
+    if request.user.is_authenticated:
+        customer=request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, completed=False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+    else:
+        items = []
+        order = {"get_cart_total": 0, "get_cart_items": 0}
+        cartItems = order['get_cart_items']
+
+    product = Product.objects.get(pk=pk)
+    
+    context={'items':items, 'order':order, 'product':product, 'cartItems':cartItems}
+    return render(request, 'store/product.html', context)
+
+
 
 def login(request):
-    
+    #logic for navbar
     if request.user.is_authenticated:
         customer=request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, completed=False)
@@ -79,10 +105,10 @@ def login(request):
         if user is not None:
             login(request, user)
             messages.success(request, 'Login successful.')
-            return redirect('home') 
+            return redirect('store/store.html') 
         else:
             messages.error(request, 'Invalid login credentials.')
-            
+
     context = {'items':items, 'order':order, 'cartItems':cartItems}
     return render(request, "store/login.html", context)
 

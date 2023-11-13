@@ -43,18 +43,35 @@
                         <a class="nav-link" href="{% url 'store' %}">Store<span class="sr-only"></span></a>
                     </li>
                 </ul>
-                <div class="form-inline my-2 my-lg-0 mx-2 ms-auto">
-                    <a href="{% url 'login' %}"class="btn btn-warning">Login</a>
-                    <a href="{% url 'signup' %}"class="btn btn-warning">Register</a>
-                    
-                    <a href="{% url 'cart' %}">
-                        <img  id="cart-icon" src="{% static 'images/trolley.png' %}">
-                    </a>
-                    <p class="ms-auto" id="cart-total">{{cartItems}}</p>
+                <div class="d-flex align-items-center ms-auto">
+                {% if user.is_authenticated %}
+                    <!-- Display user's name and dropdown menu -->
+                    <span class="navbar-text me-3">
+                        {{ user }}
+                    </span>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Account
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">Profile</a>
+                            <a class="dropdown-item" href="#">Logout</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Display login and register buttons -->
+                    <a href="{% url 'login' %}" class="btn btn-warning">Login</a>
+                    <a href="{% url 'signup' %}" class="btn btn-warning">Register</a>
+                {% endif %}
+        
+                <a href="{% url 'cart' %}">
+                    <img id="cart-icon" src="{% static 'images/trolley.png' %}" class="img-fluid">
+                </a>
+                <p class="ms-auto" id="cart-total">{{cartItems}}</p>
                 </div>
             </div>
-
         </nav>
+        
         
         
         <div class="container">
