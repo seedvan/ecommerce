@@ -110,17 +110,7 @@ def login(request):
         cartItems = order['get_cart_items']
     
     #logic for login
-    if request.method == 'POST':
-        email = request.POST['email']
-        password = request.POST['password']
-        user = authenticate(request, email=email, password=password)
-
-        if user is not None:
-            login(request, user)
-            messages.success(request, 'Login successful.')
-            return redirect('store/store.html') 
-        else:
-            messages.error(request, 'Invalid login credentials.')
+    
 
     context = {'items':items, 'order':order, 'cartItems':cartItems}
     return render(request, "registration/login.html", context)
