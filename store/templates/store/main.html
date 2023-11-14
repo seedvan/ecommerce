@@ -45,13 +45,9 @@
                 </ul>
                 <div class="d-flex align-items-center ms-auto">
                 {% if user.is_authenticated %}
-                    <!-- Display user's name and dropdown menu -->
-                    <span class="navbar-text me-3">
-                        {{ user }}
-                    </span>
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Account
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ user }}
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item" href="#">Profile</a>
@@ -59,7 +55,6 @@
                         </div>
                     </div>
                 {% else %}
-                    <!-- Display login and register buttons -->
                     <a href="{% url 'login' %}" class="btn btn-warning">Login</a>
                     <a href="{% url 'signup' %}" class="btn btn-warning">Register</a>
                 {% endif %}

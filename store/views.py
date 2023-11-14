@@ -8,7 +8,7 @@ import json
 import datetime
 
 from .models import *
-from .form import *
+from .forms import *
 
 def store(request):
     
