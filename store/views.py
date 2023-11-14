@@ -6,7 +6,6 @@ from django.contrib import messages
 from django.shortcuts import redirect
 import json
 import datetime
-
 from .models import *
 from .forms import *
 
@@ -57,14 +56,28 @@ def checkout(request):
     return render(request, 'store/checkout.html', context)
 
 def signup(request):
+    #navbar logic
+    if request.user.is_authenticated:
+        customer=request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, completed=False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+    else:
+        items = []
+        order = {"get_cart_total": 0, "get_cart_items": 0}
+        cartItems = order['get_cart_items']
+    
+    #registration logic
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
         return redirect('store')
     else:
-        form = UserCreationForm
-    return render(request, "store/signup.html", {"form":form})
+        form = RegisterForm()
+
+    context = {'items':items, 'order':order, 'cartItems':cartItems, 'form':form}
+    return render(request, "store/signup.html", context)
 
 def productdetails(request, pk):
     if request.user.is_authenticated:
@@ -96,7 +109,7 @@ def login(request):
         order = {"get_cart_total": 0, "get_cart_items": 0}
         cartItems = order['get_cart_items']
     
-    
+    #logic for login
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
@@ -110,7 +123,7 @@ def login(request):
             messages.error(request, 'Invalid login credentials.')
 
     context = {'items':items, 'order':order, 'cartItems':cartItems}
-    return render(request, "store/login.html", context)
+    return render(request, "registration/login.html", context)
 
 def updateItem(request):
     data = json.loads(request.body)
