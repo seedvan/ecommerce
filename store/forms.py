@@ -12,3 +12,8 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ['email', 'username', 'password1', 'password2']
 
+
+class SearchForm(forms.Form):
+    query = forms.CharField(max_length=100, required=False, label='Search')
+
+

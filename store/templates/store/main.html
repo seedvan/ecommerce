@@ -38,11 +38,18 @@
             </button>
         
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'store' %}">Store<span class="sr-only"></span></a>
                     </li>
                 </ul>
+                
+                <form method="get" class="ms-auto d-flex flex-row align-items-center" action="{% url 'search' %}">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+                    <button class="btn btn-success" type="submit" >Search</button>
+                </form>
+                
                 <div class="d-flex align-items-center ms-auto">
                 {% if user.is_authenticated %}
                     <div class="dropdown">
@@ -55,8 +62,8 @@
                         </div>
                     </div>
                 {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-warning">Login</a>
-                    <a href="{% url 'signup' %}" class="btn btn-warning">Register</a>
+                    <a href="{% url 'login' %}" class="btn ">Login</a>
+                    <a href="{% url 'signup' %}" class="btn ">Register</a>
                 {% endif %}
         
                 <a href="{% url 'cart' %}">

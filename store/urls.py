@@ -12,4 +12,5 @@ urlpatterns = [
     #path('login/', views.login, name="login"),
     path('product/<int:pk>/', views.productdetails, name="product"),
     path('', include("django.contrib.auth.urls")),
+    path('search/', views.search, name="search"),
 ]

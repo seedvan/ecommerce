@@ -4,8 +4,10 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.db.models import Q
 import json
 import datetime
+import re
 from .models import *
 from .forms import *
 
@@ -72,7 +74,8 @@ def signup(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
-        return redirect('store')
+            login(request)
+            return redirect('store')
     else:
         form = RegisterForm()
 
@@ -114,6 +117,37 @@ def login(request):
 
     context = {'items':items, 'order':order, 'cartItems':cartItems}
     return render(request, "registration/login.html", context)
+
+def search(request):
+    #cart logic
+    if request.user.is_authenticated:
+        customer=request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, completed=False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+    else:
+        items = []
+        order = {"get_cart_total": 0, "get_cart_items": 0}
+        cartItems = order['get_cart_items']
+
+    products = Product.objects.all()
+    
+    
+    #search bar logic
+    form = SearchForm(request.GET)
+    results = []
+
+    if form.is_valid():
+        #SQL injection
+        query = form.cleaned_data['query']
+        #cleaned_query = re.sub(r'[^a-zA-Z0-9]', '', query)
+        results = Product.objects.filter(
+            Q(name__icontains=query) 
+            )
+    
+
+    context = {'products':results, 'cartItems':cartItems, 'form': form, 'results': results}
+    return render(request, 'store/search.html', context)
 
 def updateItem(request):
     data = json.loads(request.body)
