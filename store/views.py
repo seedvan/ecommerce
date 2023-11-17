@@ -1,13 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from django.shortcuts import redirect
+
 from django.db.models import Q
 import json
 import datetime
-import re
+
 from .models import *
 from .forms import *
 
@@ -73,8 +73,9 @@ def signup(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
-            form.save()
-            login(request)
+            user = form.save()
+            #form.save()
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return redirect('store')
     else:
         form = RegisterForm()
