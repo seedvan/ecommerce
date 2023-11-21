@@ -75,7 +75,7 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             #form.save()
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            login(request)
             return redirect('store')
     else:
         form = RegisterForm()
@@ -99,7 +99,26 @@ def productdetails(request, pk):
     context={'items':items, 'order':order, 'product':product, 'cartItems':cartItems}
     return render(request, 'store/product.html', context)
 
+def profile(request):
+    if request.user.is_authenticated:
+        customer=request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, completed=False)
+        items = order.orderitem_set.all()
+        cartItems = order.get_cart_items
+    else:
+        items = []
+        order = {"get_cart_total": 0, "get_cart_items": 0}
+        cartItems = order['get_cart_items']
 
+    
+    total = Order.get_cart_total
+    orders=customer.get_orders()
+    products = Product.objects.all()
+    
+    
+    
+    context = {'products':products, 'cartItems':cartItems, 'orders':orders, 'customer':customer, 'total':total}
+    return render(request, 'store/profile.html', context)
 
 def login(request):
     #logic for navbar
@@ -184,6 +203,10 @@ def processOrder(request):
         order = order, created = Order.objects.get_or_create(customer=customer, completed=False)
         total = float(data['form']['total'])
         order.transaction_id = transaction_id
+
+        if total == order.get_cart_total:
+            order.completed=True
+        order.save()
 
         ShippingAddress.objects.create(
             customer=customer,

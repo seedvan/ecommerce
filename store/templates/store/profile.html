@@ -1,0 +1,35 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+<div class="box-element">
+    <h1 class="text-center">{{ user }}'s Profile</h1>
+    <br>
+    <section>
+        <h2 class="text-center">Order History</h2>
+        <br>
+        <ul class="order-list">
+            {% for order in orders %}
+                <div class="box-element">
+                    <div class="order-details">
+                        <span><strong>Order ID: {{ order.id }}</strong></span>
+                        <br>
+                        <span class="order-date">Order Date: {{ order.order_date }}</span>
+                        
+                    </div>
+                    
+                    <div class="order-items">
+                        <ul>
+                            Products: 
+                            {% for order_item in order.get_order_items %}
+                            <li>{{ order_item.product.name }}: £{{order_item.get_total}} (Quantity: {{ order_item.quantity }})</li>
+                            {% endfor %}
+                            {{order_item.get_total}}
+                        </ul>
+                    </div>
+                </div>
+                <br>
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+{% endblock content %}
