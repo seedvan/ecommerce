@@ -8,6 +8,7 @@ from django.db.models import Q
 import json
 import datetime
 
+
 from .models import *
 from .forms import *
 
@@ -105,19 +106,19 @@ def profile(request):
         order, created = Order.objects.get_or_create(customer=customer, completed=False)
         items = order.orderitem_set.all()
         cartItems = order.get_cart_items
+        orders=customer.get_orders()
     else:
         items = []
         order = {"get_cart_total": 0, "get_cart_items": 0}
         cartItems = order['get_cart_items']
+        orders=[]
 
-    
-    total = Order.get_cart_total
-    orders=customer.get_orders()
+    for order in orders:
+        order.total = order.get_order_total()
+
     products = Product.objects.all()
-    
-    
-    
-    context = {'products':products, 'cartItems':cartItems, 'orders':orders, 'customer':customer, 'total':total}
+        
+    context = {'products':products, 'cartItems':cartItems, 'orders':orders, 'customer':customer, }
     return render(request, 'store/profile.html', context)
 
 def login(request):
@@ -219,4 +220,5 @@ def processOrder(request):
     else:
         print('User is not logged in')
     return JsonResponse('Payment complete', safe=False)
+
 

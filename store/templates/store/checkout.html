@@ -39,7 +39,10 @@
 
             <br>
             <div class="box-element hidden" id="payment-info">
-                <button id="make-payment">Purchase Order</button>
+                <div id="paypal-button-container">
+                    
+                </div>
+                <!--<button id="make-payment">Purchase Order</button>-->
             </div>
             
         </div>
@@ -72,6 +75,34 @@
         </div>
     </div>
     
+    
+
+    <script src="https://www.paypal.com/sdk/js?client-id=AR1qish9nmnXnkoxi0aEI4Q5G8bJ4V_PiI1Hecfe4JBEk6uE9-siYSqOayupHLgDFKcv-ria7mWp8YIO&currency=GBP" data-sdk-integration-source="button-factory"></script>
+    
+    <script>
+         // Render the PayPal button dynamically
+        paypal.Buttons({
+                createOrder: function(data, actions) {
+                    // Set up the transaction when the create order button is clicked
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: total,
+                            },
+                        }],
+                    });
+                },
+                onApprove: function(data, actions) {
+                    // Capture the funds from the transaction
+                    return actions.order.capture().then(function(details) {
+                        // Call your server to save the transaction
+                        submitFormData();
+                    });
+                },
+            }).render('#paypal-button-container'); // Render the PayPal button in the specified container
+    </script>
+
+
     <script type="text/javascript">
         
         var total = '{{order.get_cart_total}}'
@@ -79,7 +110,7 @@
         if (user != 'AnonymousUser'){
             
             document.getElementById('user-info').classList.add('hidden')
-            document.getElementById('payment-info').classList.remove('hidden')
+            
         }
         
         var form = document.getElementById('form')
@@ -91,13 +122,12 @@
             document.getElementById('payment-info').classList.remove('hidden')
         })
         
-        document.getElementById('make-payment').addEventListener('click', function(e){
+        /*document.getElementById('make-payment').addEventListener('click', function(e){
             submitFormData()
         })
-
+        */
         function submitFormData(){
-            console.log('Payment button clicked')
-            
+           
             var userFormData = {
                 'name':form.name.value,
                 'email':form.email.value,

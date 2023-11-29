@@ -17,15 +17,17 @@
                         
                     </div>
                     
-                    <div class="order-items">
-                        <ul>
-                            Products: 
+                    <div class="order-items">     
+                        Products: 
+                        
+                         <ul>   
                             {% for order_item in order.get_order_items %}
-                            <li>{{ order_item.product.name }}: £{{order_item.get_total}} (Quantity: {{ order_item.quantity }})</li>
+                            <li>{{ order_item.product.name }} x {{ order_item.quantity }} = £{{order_item.get_total|floatformat:2}}</li>
                             {% endfor %}
-                            {{order_item.get_total}}
                         </ul>
                     </div>
+                    <br>
+                    <p><strong>Total: £{{order.total|floatformat:2}}</strong></p>
                 </div>
                 <br>
             {% endfor %}

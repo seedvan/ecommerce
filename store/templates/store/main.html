@@ -28,6 +28,8 @@
         }
         var csrftoken = getToken('csrftoken');
         </script>
+        <script src="https://js.stripe.com/v3/"></script>
+
     </head>
     <body>
         
@@ -57,7 +59,7 @@
                             {{ user }}
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
+                            <a class="dropdown-item" href="{% url 'profile' %}">Order History</a>
                             <a class="dropdown-item" href="/logout">Logout</a>
                         </div>
                     </div>
