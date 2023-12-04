@@ -39,10 +39,7 @@
 
             <br>
             <div class="box-element hidden" id="payment-info">
-                <div id="paypal-button-container">
-                    
-                </div>
-                <!--<button id="make-payment">Purchase Order</button>-->
+                <div id="paypal-button-container"></div>
             </div>
             
         </div>
@@ -93,13 +90,13 @@
                     });
                 },
                 onApprove: function(data, actions) {
-                    // Capture the funds from the transaction
+                    // Capture the funds the transaction
                     return actions.order.capture().then(function(details) {
-                        // Call your server to save the transaction
+                        // Call server to save the transaction
                         submitFormData();
                     });
                 },
-            }).render('#paypal-button-container'); // Render the PayPal button in the specified container
+            }).render('#paypal-button-container'); // Render the PayPal button in the container
     </script>
 
 

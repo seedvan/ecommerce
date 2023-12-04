@@ -77,7 +77,7 @@ def signup(request):
             user = form.save()
             #form.save()
             login(request)
-            return redirect('store')
+            return redirect('login')
     else:
         form = RegisterForm()
 
