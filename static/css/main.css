@@ -41,7 +41,7 @@ h1,h2,h3,h4,h5,h6{
 	color:#fff;
 	background-color: red;
 	width: 20px;
-	height: 25px;
+	height: 20px;
 	border-radius: 50%;
 	font-size: 14px;
 }
@@ -98,3 +98,4 @@ h1,h2,h3,h4,h5,h6{
 .hidden{
 	display: none!important;
 }
+
