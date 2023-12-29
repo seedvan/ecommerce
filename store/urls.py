@@ -13,5 +13,5 @@ urlpatterns = [
     path('product/<int:pk>/', views.productdetails, name="product"),
     path('', include("django.contrib.auth.urls")),
     path('search/', views.search, name="search"),
-    path('profile/', views.profile, name="profile")
+    path('profile/', views.profile, name="profile"),
 ]

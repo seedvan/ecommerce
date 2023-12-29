@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 
@@ -221,4 +221,9 @@ def processOrder(request):
         print('User is not logged in')
     return JsonResponse('Payment complete', safe=False)
 
+
+
+
+
+    
 

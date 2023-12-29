@@ -1,6 +1,6 @@
 from .models import *
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.models import User
 from django import forms
 
@@ -18,7 +18,6 @@ class RegisterForm(UserCreationForm):
 
         if commit:
             user.save()
-
             # Create and associate a customer instance
             customer = Customer(user=user, name=user.username, email=user.email)
             customer.save()
