@@ -1,19 +1,16 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-
 from django.db.models import Q
 import json
 import datetime
-
-
 from .models import *
 from .forms import *
 
+#This function handles the logic for the store page
 def store(request):
-    
     if request.user.is_authenticated:
         customer=request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, completed=False)
@@ -28,8 +25,8 @@ def store(request):
     context = {'products':products, 'cartItems':cartItems}
     return render(request, 'store/store.html', context)
 
+#This function handles the logic for the shopping cart
 def cart(request):
-    
     if request.user.is_authenticated:
         customer=request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, completed=False)
@@ -43,8 +40,8 @@ def cart(request):
     context = {'items':items, 'order':order, 'cartItems':cartItems}
     return render(request, 'store/cart.html', context)
 
+#This function handles the logic for the shopping cart
 def checkout(request):
-        
     if request.user.is_authenticated:
         customer=request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, completed=False)
@@ -58,8 +55,8 @@ def checkout(request):
     context = {'items':items, 'order':order, 'cartItems':cartItems}
     return render(request, 'store/checkout.html', context)
 
+#This function handles the logic for the registration/sign up page
 def signup(request):
-    #navbar logic
     if request.user.is_authenticated:
         customer=request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, completed=False)
@@ -70,7 +67,7 @@ def signup(request):
         order = {"get_cart_total": 0, "get_cart_items": 0}
         cartItems = order['get_cart_items']
     
-    #registration logic
+    #Registration logic
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -84,6 +81,7 @@ def signup(request):
     context = {'items':items, 'order':order, 'cartItems':cartItems, 'form':form}
     return render(request, "store/signup.html", context)
 
+#This function handles the logic behind the product listing pages
 def productdetails(request, pk):
     if request.user.is_authenticated:
         customer=request.user.customer
@@ -100,6 +98,7 @@ def productdetails(request, pk):
     context={'items':items, 'order':order, 'product':product, 'cartItems':cartItems}
     return render(request, 'store/product.html', context)
 
+#This function handles the logic behind a user's profile page
 def profile(request):
     if request.user.is_authenticated:
         customer=request.user.customer
@@ -121,8 +120,8 @@ def profile(request):
     context = {'products':products, 'cartItems':cartItems, 'orders':orders, 'customer':customer, }
     return render(request, 'store/profile.html', context)
 
+#This function handles the logic behind the login page. Note the authentication process is handled by built in Django authentication modules
 def login(request):
-    #logic for navbar
     if request.user.is_authenticated:
         customer=request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, completed=False)
@@ -133,14 +132,11 @@ def login(request):
         order = {"get_cart_total": 0, "get_cart_items": 0}
         cartItems = order['get_cart_items']
     
-    #logic for login
-    
-
     context = {'items':items, 'order':order, 'cartItems':cartItems}
     return render(request, "registration/login.html", context)
 
+#This function defines the search page logic
 def search(request):
-    #cart logic
     if request.user.is_authenticated:
         customer=request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, completed=False)
@@ -153,15 +149,12 @@ def search(request):
 
     products = Product.objects.all()
     
-    
-    #search bar logic
+    #This part of the function specifically handles the User's query into the search bar form
     form = SearchForm(request.GET)
     results = []
 
     if form.is_valid():
-        #SQL injection
         query = form.cleaned_data['query']
-        #cleaned_query = re.sub(r'[^a-zA-Z0-9]', '', query)
         results = Product.objects.filter(
             Q(name__icontains=query) 
             )
@@ -170,6 +163,7 @@ def search(request):
     context = {'products':results, 'cartItems':cartItems, 'form': form, 'results': results}
     return render(request, 'store/search.html', context)
 
+#This function handles the logic behind updating the Shopping cart
 def updateItem(request):
     data = json.loads(request.body)
     productId = data['productId']
@@ -195,6 +189,7 @@ def updateItem(request):
 
     return JsonResponse('Item was added', safe=False)
 
+#This function handles the logic behind processing a customers order
 def processOrder(request):
     transaction_id = datetime.datetime.now().timestamp()
     data = json.loads(request.body)
@@ -221,4 +216,9 @@ def processOrder(request):
         print('User is not logged in')
     return JsonResponse('Payment complete', safe=False)
 
+
+
+
+
+    
 

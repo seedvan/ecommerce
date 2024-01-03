@@ -1,3 +1,4 @@
+//Cart updating functionality
 var updateBtns = document.getElementsByClassName('update-cart')
 for (var i = 0; i < updateBtns.length; i++){
     updateBtns[i].addEventListener('click', function(){
@@ -13,7 +14,7 @@ for (var i = 0; i < updateBtns.length; i++){
         }
     })
 }
-
+//Defines function for updating user order, and sending this information to web server
 function updateUserOrder(productId, action){
     console.log('User is logged in..')
     var url = '/update_item/'

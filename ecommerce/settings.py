@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+#Imports pathlib and os modules, allowing the application access to files within the project directory
 from pathlib import Path
 import os
 
@@ -17,20 +17,28 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+#The secret key used for cryptographic functions and security measures. 
+#Note that in a production environment, the developer would store the secret key as an environmental variable on the production server.
+#However, the author decided this was beyond the scope of the project
 SECRET_KEY = 'django-insecure-_w!p&iv=x4yd3as7g(0pu^88s2c$cgi32@ec(9aurkl&rreb3f'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+#Sets the DEBUG setting to true. In production this would be False, however as the author wanted to read the error messages during the tests, it remained True
 DEBUG = True
 
-ALLOWED_HOSTS = []
+#Host Header Validation
+ALLOWED_HOSTS = ["127.0.0.1", "10.0.2.4"]
 
+#Security Settings that enforce SSL (HTTPS) and secure cookies
+SSL_DIR = ['ecommerce']
+SSL_CERTIFICATE = ['mysite.crt']
+SSL_PRIVATE_KEY = ['mysite.key']
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
 
-# Application definition
-
+# Application list within the Django Project
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,6 +51,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5'
 ]
 
+#Defines list of middleware components that process requests and responses, including security related middleware, session handling, CSRF protection and authentication
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -51,10 +60,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
+#Specifies URL Configuration for project, and points towards urls.py within the ecommerce app for relevant URLs
 ROOT_URLCONF = 'ecommerce.urls'
 
+#Template configuration
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -71,12 +83,11 @@ TEMPLATES = [
     },
 ]
 
+#WSGI Configuration
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
+#Configures the database for the project, located in the base directory of the project 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -86,8 +97,6 @@ DATABASES = {
 
 
 # Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -105,8 +114,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -117,19 +124,17 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
 STATIC_URL = '/static/'
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 MEDIA_URL = '/images/'
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
+# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRISPY_TEMPLATE_PACK="bootstrap5"
