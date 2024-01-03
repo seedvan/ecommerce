@@ -7,7 +7,7 @@
         <div class="col-md-6">
             <div class="box-element">
                 <form method="POST" class="form-group">
-                    {% csrf_token %}
+                    {% csrf_token %}  <!-- CSRF token -->
                     {{form|crispy}}
                     <p>Don't have an account? Create one <a href="{% url 'signup' %}">here!</a></p>
                     <button type="submit" class="btn btn-success">Login</button>
